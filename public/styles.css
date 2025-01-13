@@ -8,10 +8,11 @@
 /* Body styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f4f1e1, #f7d1b3); /* Warm gradient background */
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; /* Align content to the top */
     align-items: center;
     height: 100vh;
     flex-direction: column;
@@ -20,7 +21,7 @@ body {
 /* Header styles */
 h1 {
     font-size: 2.5rem;
-    color: #333;
+    color: #6B4F3B; /* Warm brown for the header */
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -29,10 +30,10 @@ h1 {
 #task-container {
     width: 100%;
     max-width: 600px;
-    margin-top: 20px;
+    margin-top: 20px; /* Adds some space from the top */
     padding: 20px;
     border-radius: 10px;
-    background-color: white;
+    background-color: #FFF7F1; /* Light warm peach background */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -44,15 +45,15 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ffffff;
+    background-color: #F9E4D4; /* Light warm peach background for tasks */
     padding: 10px 15px;
     border-radius: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid #E6C4A3; /* Soft border for tasks */
     transition: all 0.3s ease;
 }
 
 .task:hover {
-    background-color: #f7f7f7;
+    background-color: #F7D1B3; /* Slightly darker warm background on hover */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -63,21 +64,21 @@ h1 {
 /* Task text style */
 .task span {
     font-size: 1rem;
-    color: #555;
+    color: #6B4F3B; /* Dark warm brown for task text */
 }
 
 /* Task completion indicator (check or cross) */
 .task span.completed {
-    color: #2ecc71; /* Green for completed tasks */
+    color: #76C7A4; /* Soft green for completed tasks */
 }
 
 .task span.not-completed {
-    color: #e74c3c; /* Red for uncompleted tasks */
+    color: #FF6F61; /* Warm coral for incomplete tasks */
 }
 
 /* Delete button styles */
 .delete-btn {
-    background-color: #e74c3c;
+    background-color: #FF6F61; /* Warm coral for delete button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -87,7 +88,7 @@ h1 {
 }
 
 .delete-btn:hover {
-    background-color: #c0392b;
+    background-color: #D84B3C; /* Darker coral on hover */
 }
 
 /* Add new task form styles */
@@ -104,13 +105,14 @@ h1 {
     padding: 10px;
     width: 80%;
     font-size: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid #E6C4A3; /* Soft border for the input */
     border-radius: 5px;
+    background-color: #FFF7F1; /* Light peach background for input */
 }
 
 #task-form button {
     padding: 10px;
-    background-color: #3498db;
+    background-color: #FF9F89; /* Warm peach for button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -119,6 +121,8 @@ h1 {
 }
 
 #task-form button:hover {
-    background-color: #2980b9;
+    background-color: #FF7D68; /* Slightly darker peach for hover effect */
 }
+
+
 
