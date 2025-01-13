@@ -3,15 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
 
-    // Fetch tasks from the server
-    fetch('/api/tasks')
-        .then(response => response.json())
-        .then(tasks => {
-            tasks.forEach(task => {
-                addTaskToDOM(task); // Add each task to the DOM
-            });
-        })
-        .catch(err => console.error('Error fetching tasks:', err));
+    // Load tasks from localStorage first
+    loadTasksFromLocalStorage();
+
+    // Fetch tasks from the server only if there are no tasks in localStorage
+    if (!localStorage.getItem('tasks')) {
+        fetch('/api/tasks')
+            .then(response => response.json())
+            .then(tasks => {
+                tasks.forEach(task => {
+                    addTaskToDOM(task); // Add each task to the DOM
+                    saveToLocalStorage(task); // Save to localStorage
+                });
+            })
+            .catch(err => console.error('Error fetching tasks:', err));
+    }
 
     // Handle form submission to add a new task
     taskForm.addEventListener('submit', (e) => {
@@ -36,60 +42,84 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(task => {
                 addTaskToDOM(task); // Add the new task to the DOM
                 taskInput.value = ''; // Clear the input field
+                saveToLocalStorage(task); // Save to localStorage
             })
             .catch(err => console.error('Error adding task:', err));
     });
 
     // Helper function to add a task to the DOM
-function addTaskToDOM(task) {
-    const taskElement = document.createElement('div');
-    taskElement.className = 'task';
-    taskElement.dataset.id = task.id; // Store the task ID in the element
-    
-    // Create a task label
-    const taskLabel = document.createElement('span');
-    taskLabel.textContent = `${task.title} - ${task.completed ? '✅' : '❌'}`;
-    taskElement.appendChild(taskLabel);
-    
-    // Create a delete button
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.className = 'delete-btn';
-    taskElement.appendChild(deleteButton);
-    
-    // Add event listener to toggle task completion
-    taskElement.addEventListener('click', () => {
-        // Toggle completion on the server
-        fetch(`/api/tasks/${task.id}`, {
-            method: 'PATCH',
-        })
-            .then(response => response.json())
-            .then(updatedTask => {
-                // Update task in DOM
-                taskLabel.textContent = `${updatedTask.title} - ${updatedTask.completed ? '✅' : '❌'}`;
+    function addTaskToDOM(task) {
+        const taskElement = document.createElement('div');
+        taskElement.className = 'task';
+        taskElement.dataset.id = task.id; // Store the task ID in the element
+        
+        // Create a task label
+        const taskLabel = document.createElement('span');
+        taskLabel.textContent = `${task.title} - ${task.completed ? '✅' : '❌'}`;
+        taskElement.appendChild(taskLabel);
+        
+        // Create a delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-btn';
+        taskElement.appendChild(deleteButton);
+        
+        // Add event listener to toggle task completion
+        taskElement.addEventListener('click', () => {
+            // Toggle completion on the server
+            fetch(`/api/tasks/${task.id}`, {
+                method: 'PATCH',
             })
-            .catch(err => console.error('Error updating task:', err));
-    });
+                .then(response => response.json())
+                .then(updatedTask => {
+                    // Update task in DOM
+                    taskLabel.textContent = `${updatedTask.title} - ${updatedTask.completed ? '✅' : '❌'}`;
+                    saveToLocalStorage(updatedTask); // Save to localStorage
+                })
+                .catch(err => console.error('Error updating task:', err));
+        });
 
-    // Add event listener to delete task
-    deleteButton.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent the task from toggling completion
-        // Delete the task from the server
-        fetch(`/api/tasks/${task.id}`, {
-            method: 'DELETE',
-        })
-            .then(response => response.json())
-            .then(deletedTask => {
-                // Remove the task from the DOM
-                taskElement.remove();
-                console.log('Deleted task:', deletedTask);
+        // Add event listener to delete task
+        deleteButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the task from toggling completion
+            // Delete the task from the server
+            fetch(`/api/tasks/${task.id}`, {
+                method: 'DELETE',
             })
-            .catch(err => console.error('Error deleting task:', err));
-    });
-    
-    taskContainer.appendChild(taskElement);
-}
+                .then(response => response.json())
+                .then(deletedTask => {
+                    // Remove the task from the DOM
+                    taskElement.remove();
+                    removeFromLocalStorage(deletedTask.id); // Remove from localStorage
+                    console.log('Deleted task:', deletedTask);
+                })
+                .catch(err => console.error('Error deleting task:', err));
+        });
+        
+        taskContainer.appendChild(taskElement);
+    }
 
+    // Save tasks to localStorage
+    function saveToLocalStorage(task) {
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Remove a task from localStorage
+    function removeFromLocalStorage(taskId) {
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks = tasks.filter(task => task.id !== taskId);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Load tasks from localStorage
+    function loadTasksFromLocalStorage() {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.forEach(task => addTaskToDOM(task));
+    }
 });
+
+
 
 
