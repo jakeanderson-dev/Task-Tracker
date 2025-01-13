@@ -1,4 +1,4 @@
-Task Manager Web App
+Task Manager Web App:
 A simple task manager web application that allows users to add, mark as complete, and delete tasks. This project uses basic JavaScript, HTML, CSS, and a server-side API to manage tasks.
 
 Features:
